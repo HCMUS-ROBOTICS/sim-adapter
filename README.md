@@ -5,7 +5,30 @@ This is the package to fit simulators from the outside to our packages
 
 Updating...
 
-# DiRA Simulator
+# Current Supported Simulators
+
+Currently, there are two types of simulation adapters we support: DiRA and UIT. To choose different adapters, you should add `adapter` argument (please see [bin/node.py](bin/node.py)).
+
+**Select Adapters**:
+- `adapter`: the value of `adapter` argument must be in `[dira, uit]`.
+
+**(Optional) Arguments/Parameters**:
+- `is_show_image`: whether to use `cv2.imshow` or not. Default is `False`
+- `queue_size`: the publish queue size. Default is `10`
+
+**Build**:
+```bash
+cd catkin_ws
+catkin_make
+```
+
+**Example**:
+```bash
+rosrun sim_adapter node.py _adapter:=uit _is_show_image:=True
+```
+
+
+## DiRA Simulator
 
 This simulation publishes the below topics which could be subsribed to by rosbridge-server package. In order to use this simulator, you should map the topics respectively.
 
@@ -22,20 +45,22 @@ where `<team>` is the team infomation set in the simulator.
 
 where `<team>` is the team infomation set in the simulator.
 
-**(Optional) Arguments/Parameters**:
-- `is_show_image`: whether to use `cv2.imshow` or not. Default is `False`
-- `queue_size`: the publish queue size. Default is `10`
-
-
-**Build**:
-```bash
-cd catkin_ws
-catkin_make
-```
-
 **Example running command**:
 ```bash
 rosrun sim_adapter node.py _dira_rgb_topic:=/team220/camera/rgb/compressed _dira_speed_topic:=/team220/set_speed _dira_angle_topic:=/team220/set_angle _rgb_topic:=/camera/rgb/image/compressed _is_show_image:=true
 ```
 
 You could also write a launch file to set these things.
+
+## UIT Simulator
+
+This simulation send message via websocket. In order to use this simulator, you should choose the hostname and port number respectively.
+
+**Parameters**:
+- `uit_hostname`: hostname for the simulator to access. Default is `4567`
+- `uit_port`: port number for the simulator to access. Default is `127.0.0.1`
+
+**Example running command**:
+```bash
+rosrun sim_adapter node.py _adapter:=uit _uit_hostname:=127.0.0.1 _uit_port:=4567 _is_show_image:=True
+```
