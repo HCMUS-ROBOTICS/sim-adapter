@@ -1,4 +1,5 @@
 from .simulator import SimAdapter, Simulator
+import rospy
 from geometry_msgs.msg import Twist
 import numpy as np
 import cv2
@@ -32,7 +33,7 @@ class UITSimAdapter(SimAdapter):
         eventlet.wsgi.server(eventlet.listen(('', 4567)), self.app)
 
     def connect(self, sid, environ):
-        print('connect', sid)
+        rospy.loginfo(f'Connect to socket id: {sid}')
         self.send_control()
 
     def telemetry(self, sid, data):
