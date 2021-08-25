@@ -5,6 +5,16 @@ This is the package to fit simulators from the outside to our packages
 
 Updating...
 
+# Current Supported Simulators
+
+Currently, there are two types of simulation adapters we support: DiRA and UIT. To choose different adapters, you should add `adapter` argument (please see [bin/node.py](bin/node.py)).
+
+**Example**
+```bash
+rosrun sim_adapter node.py _adapter:=uit
+```
+
+
 # DiRA Simulator
 
 This simulation publishes the below topics which could be subsribed to by rosbridge-server package. In order to use this simulator, you should map the topics respectively.
@@ -39,3 +49,16 @@ rosrun sim_adapter node.py _dira_rgb_topic:=/team220/camera/rgb/compressed _dira
 ```
 
 You could also write a launch file to set these things.
+
+# UIT Simulator
+
+This simulation send message via websocket. In order to use this simulator, you should choose the hostname and port number respectively.
+
+**Parameters** 
+- `uit_hostname`: hostname for the simulator to access. Default is `4567`
+- `uit_port`: port number for the simulator to access. Default is `127.0.0.1`
+
+**Example running command**:
+```bash
+rosrun sim_adapter node.py _adapter:=uit _uit_hostname:=127.0.0.1 _uit_port:=4567 _is_show_image:=True
+```
