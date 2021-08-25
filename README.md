@@ -28,7 +28,7 @@ rosrun sim_adapter node.py _adapter:=uit _is_show_image:=True
 ```
 
 
-# DiRA Simulator
+## DiRA Simulator
 
 This simulation publishes the below topics which could be subsribed to by rosbridge-server package. In order to use this simulator, you should map the topics respectively.
 
@@ -52,7 +52,7 @@ rosrun sim_adapter node.py _dira_rgb_topic:=/team220/camera/rgb/compressed _dira
 
 You could also write a launch file to set these things.
 
-# UIT Simulator
+## UIT Simulator
 
 This simulation send message via websocket. In order to use this simulator, you should choose the hostname and port number respectively.
 
