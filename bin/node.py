@@ -13,10 +13,10 @@ def main():
 
     adapter = rospy.get_param('~adapter', default='dira')
 
-    rospy.loginfo(f'Choose adapter for {adapter} simulation')
+    rospy.loginfo('Choose adapter for %s simulation', adapter)
 
     if adapter not in ['dira', 'uit']:
-        raise ValueError(f'Adapter must be in [dira, uit]')
+        raise ValueError('Adapter must be in [dira, uit]')
 
     if adapter == 'dira':
         simulator.set_adapter(DiRASimAdapter(simulator))
