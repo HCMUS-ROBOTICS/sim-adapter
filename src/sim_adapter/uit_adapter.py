@@ -30,7 +30,11 @@ class UITSimAdapter(SimAdapter):
         self.sio.on('telemetry', self.telemetry)
         self.sio.on('connect', self.connect)
 
-        eventlet.wsgi.server(eventlet.listen(('', 4567)), self.app)
+        port = int(rospy.get_param('~uit_port', default=4567))
+        hostname = rospy.get_param('~uit_hostname', default='127.0.0.1')
+
+        rospy.loginfo(f'Listening to {hostname}:{port}')
+        eventlet.wsgi.server(eventlet.listen((hostname, port)), self.app)
 
     def connect(self, sid, environ):
         rospy.loginfo(f'Connect to socket id: {sid}')
