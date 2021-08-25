@@ -2,6 +2,7 @@
 
 import rospy
 from sim_adapter.dira_adapter import DiRASimAdapter
+from sim_adapter.uit_adapter import UITSimAdapter
 from sim_adapter.simulator import Simulator
 
 
@@ -10,8 +11,18 @@ def main():
     rospy.loginfo('sim_adapter_node is initialized')
     simulator = Simulator()
 
-    # TODO: set different adapter based on argv
-    simulator.set_adapter(DiRASimAdapter(simulator))
+    adapter = rospy.get_param('~adapter', default='dira')
+
+    rospy.loginfo('Choose adapter for %s simulation', adapter)
+
+    if adapter not in ['dira', 'uit']:
+        raise ValueError('Adapter must be in [dira, uit]')
+
+    if adapter == 'dira':
+        simulator.set_adapter(DiRASimAdapter(simulator))
+    if adapter == 'uit':
+        simulator.set_adapter(UITSimAdapter(simulator))
+
     simulator.run_loop()
 
 
