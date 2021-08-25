@@ -10,10 +10,10 @@ Updating...
 Currently, there are two types of simulation adapters we support: DiRA and UIT. To choose different adapters, you should add `adapter` argument (please see [bin/node.py](bin/node.py)).
 
 **Publish topics**:
-- `rgb_topic`: a topic to publish the image from the simulator. Default is `/camera/rgb/image/compressed`
+- `rgb_topic`: a topic to publish the image to the self-driving system. Default is `/camera/rgb/image/compressed`
 
 **Subscribe topics**:
-- `cmd_topic`: a topic to set driving info. Default is `/cmd_vel`
+- `cmd_topic`: a topic to set driving info sent from self-driving system. Default is `/cmd_vel`
 
 **Arguments/Parameters**:
 - `adapter`: the value of `adapter` argument must be in `[dira, uit]`.
