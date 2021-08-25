@@ -9,12 +9,16 @@ Updating...
 
 Currently, there are two types of simulation adapters we support: DiRA and UIT. To choose different adapters, you should add `adapter` argument (please see [bin/node.py](bin/node.py)).
 
-**Select Adapters**:
-- `adapter`: the value of `adapter` argument must be in `[dira, uit]`.
+**Publish topics**:
+- `rgb_topic`: a topic to publish the image from the simulator. Default is `/camera/rgb/image/compressed`
 
-**(Optional) Arguments/Parameters**:
-- `is_show_image`: whether to use `cv2.imshow` or not. Default is `False`
-- `queue_size`: the publish queue size. Default is `10`
+**Subscribe topics**:
+- `cmd_topic`: a topic to set driving info. Default is `/cmd_vel`
+
+**Arguments/Parameters**:
+- `adapter`: the value of `adapter` argument must be in `[dira, uit]`.
+- (optional) `is_show_image`: whether to use `cv2.imshow` or not. Default is `False`
+- (optional) `queue_size`: the publish queue size. Default is `10`
 
 **Build**:
 ```bash
@@ -31,15 +35,14 @@ rosrun sim_adapter node.py _adapter:=uit _is_show_image:=True
 ## DiRA Simulator
 
 This simulation publishes the below topics which could be subsribed to by rosbridge-server package. In order to use this simulator, you should map the topics respectively.
+The publishing and subscribing topics belows are used for internal interacting with this simulation only.
 
 **Subscribe topics**:
 - `dira_rgb_topic`: a rgb image topic published by the simulator. It follows the pattern: `/<team>/camera/rgb/compressed`
-- `cmd_topic`: a topic to set driving info. Default is `/cmd_vel`
 
 where `<team>` is the team infomation set in the simulator.
 
 **Publish topics**:
-- `rgb_topic`: a topic to publish the image from the simulator. Default is `/camera/rgb/image/compressed`
 - `dira_speed_topic`: a topic to set driving speed of the simulator. It follows the pattern: `/<team>/set_speed`
 - `dira_angle_topic`: a topic to set driving angle of the simulator. It follows the pattern: `/<team>/set_angle`
 
