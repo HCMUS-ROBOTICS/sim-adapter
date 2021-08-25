@@ -9,9 +9,22 @@ Updating...
 
 Currently, there are two types of simulation adapters we support: DiRA and UIT. To choose different adapters, you should add `adapter` argument (please see [bin/node.py](bin/node.py)).
 
-**Example**
+**Select Adapters**:
+- `adapter`: the value of `adapter` argument must be in `[dira, uit]`.
+
+**(Optional) Arguments/Parameters**:
+- `is_show_image`: whether to use `cv2.imshow` or not. Default is `False`
+- `queue_size`: the publish queue size. Default is `10`
+
+**Build**:
 ```bash
-rosrun sim_adapter node.py _adapter:=uit
+cd catkin_ws
+catkin_make
+```
+
+**Example**:
+```bash
+rosrun sim_adapter node.py _adapter:=uit _is_show_image:=True
 ```
 
 
@@ -32,17 +45,6 @@ where `<team>` is the team infomation set in the simulator.
 
 where `<team>` is the team infomation set in the simulator.
 
-**(Optional) Arguments/Parameters**:
-- `is_show_image`: whether to use `cv2.imshow` or not. Default is `False`
-- `queue_size`: the publish queue size. Default is `10`
-
-
-**Build**:
-```bash
-cd catkin_ws
-catkin_make
-```
-
 **Example running command**:
 ```bash
 rosrun sim_adapter node.py _dira_rgb_topic:=/team220/camera/rgb/compressed _dira_speed_topic:=/team220/set_speed _dira_angle_topic:=/team220/set_angle _rgb_topic:=/camera/rgb/image/compressed _is_show_image:=true
@@ -54,7 +56,7 @@ You could also write a launch file to set these things.
 
 This simulation send message via websocket. In order to use this simulator, you should choose the hostname and port number respectively.
 
-**Parameters** 
+**Parameters**:
 - `uit_hostname`: hostname for the simulator to access. Default is `4567`
 - `uit_port`: port number for the simulator to access. Default is `127.0.0.1`
 
