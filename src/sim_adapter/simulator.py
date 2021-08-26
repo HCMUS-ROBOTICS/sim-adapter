@@ -17,6 +17,25 @@ class SimAdapter:
         simulator, be sure to call the corresponding method of the `Simulator`'s instance
     """
 
+    def on_start(self):
+        r"""Starting callback
+
+        This method is being called before the rospy.spin loop.
+
+        It is neccessary for some systems that they need to initialize stuffs before
+        the spinning loop starts.
+        """
+        pass
+
+    def on_exit(self):
+        r"""Exit callback
+
+        This method is being called after the rospy.spin loop.
+
+        It is neccessary for some systems that they need to initialize stuffs before
+        the spinning loop starts.
+        """
+
     def send_command(self, cmd_vel: Twist):
         pass
 
@@ -90,7 +109,8 @@ class Simulator:
         This will hang the process to receive as well as publish messages via callbacks
         initialized from the constructor.
         """
-        try:
-            rospy.spin()
-        except KeyboardInterrupt:
-            rospy.loginfo('Shutdown node')
+
+        self.adapter.on_start()
+        rospy.spin()
+        self.adapter.on_exit()
+        rospy.signal_shutdown('Node shutdown gracefully.')
