@@ -22,7 +22,7 @@ class SimAdapter:
 
         This method is being called before the rospy.spin loop.
 
-        It is neccessary for some systems that they need to initialize stuffs before
+        It is necessary for some systems that they need to initialize stuffs before
         the spinning loop starts.
         """
         pass
@@ -32,8 +32,8 @@ class SimAdapter:
 
         This method is being called after the rospy.spin loop.
 
-        It is neccessary for some systems that they need to initialize stuffs before
-        the spinning loop starts.
+        It is necessary for some systems that they need to release stuffs after
+        the spinning loop ends.
         """
 
     def send_command(self, cmd_vel: Twist):
