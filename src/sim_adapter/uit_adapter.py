@@ -61,6 +61,9 @@ class UITSimAdapter(SimAdapter):
             },
             skip_sid=True)
 
+    def on_start(self):
+        eventlet.wsgi.server(self.listen, self.app)
+        
     def send_command(self, cmd_vel: Twist):
         self.speed = cmd_vel.linear.x
         self.angle = cmd_vel.angular.z

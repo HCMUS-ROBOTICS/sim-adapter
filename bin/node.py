@@ -5,8 +5,6 @@ from sim_adapter.dira_adapter import DiRASimAdapter
 from sim_adapter.uit_adapter import UITSimAdapter
 from sim_adapter.simulator import Simulator
 
-import eventlet
-
 def main():
     rospy.init_node('sim_adapter_node', disable_signals=True)
     rospy.loginfo('sim_adapter_node is initialized')
@@ -22,9 +20,7 @@ def main():
     if adapter == 'dira':
         simulator.set_adapter(DiRASimAdapter(simulator))
     if adapter == 'uit':
-        uit_adapter = UITSimAdapter(simulator)
-        simulator.set_adapter(uit_adapter)
-        eventlet.wsgi.server(uit_adapter.listen, uit_adapter.app)
+        simulator.set_adapter(UITSimAdapter(simulator))
 
     simulator.run_loop()
 
