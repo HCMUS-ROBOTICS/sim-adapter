@@ -30,10 +30,12 @@ class UITSimAdapter(SimAdapter):
         self.sio.on('telemetry', self.telemetry)
         self.sio.on('connect', self.connect)
 
+    def on_start(self):
         port = int(rospy.get_param('~uit_port', default=4567))
         hostname = rospy.get_param('~uit_hostname', default='127.0.0.1')
 
         rospy.loginfo('Listening to %s:%d', hostname, port)
+
         eventlet.wsgi.server(eventlet.listen((hostname, port)), self.app)
 
     def connect(self, sid, environ):
@@ -60,9 +62,6 @@ class UITSimAdapter(SimAdapter):
                 'throttle': str(self.speed),
             },
             skip_sid=True)
-
-        self.speed = 0.0
-        self.angle = 0.0
 
     def send_command(self, cmd_vel: Twist):
         self.speed = cmd_vel.linear.x
