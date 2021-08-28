@@ -3,7 +3,12 @@ This is the package to fit simulators from the outside to our packages
 
 # Installlation
 
-Updating...
+## Requirements
+
+Run:
+```
+pip install -r requirements.txt
+```
 
 # Current Supported Simulators
 
