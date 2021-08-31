@@ -37,6 +37,7 @@ class UITSimAdapter(SimAdapter):
         rospy.loginfo('Listening to %s:%d', hostname, port)
 
         eventlet.wsgi.server(eventlet.listen((hostname, port)), self.app)
+        rospy.signal_shutdown('keyboard interrupted.')
 
     def connect(self, sid, environ):
         rospy.loginfo('Connect to socket id: %s', sid)
