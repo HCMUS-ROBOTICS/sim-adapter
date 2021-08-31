@@ -58,7 +58,10 @@ where `<team>` is the team infomation set in the simulator.
 rosrun sim_adapter node.py _dira_rgb_topic:=/team220/camera/rgb/compressed _dira_speed_topic:=/team220/set_speed _dira_angle_topic:=/team220/set_angle _rgb_topic:=/camera/rgb/image/compressed _is_show_image:=true
 ```
 
-You could also write a launch file to set these things.
+Or run from a launch file (please see the launch file and override the arguments if need):
+```bash
+roslaunch sim_adapter dira.launch
+```
 
 ## UIT Simulator
 
@@ -71,4 +74,9 @@ This simulation send message via websocket. In order to use this simulator, you 
 **Example running command**:
 ```bash
 rosrun sim_adapter node.py _adapter:=uit _uit_hostname:=127.0.0.1 _uit_port:=4567 _is_show_image:=True
+```
+
+Or run from a launch file (please see the launch file and override the arguments if need):
+```bash
+roslaunch sim_adapter uit.launch
 ```
