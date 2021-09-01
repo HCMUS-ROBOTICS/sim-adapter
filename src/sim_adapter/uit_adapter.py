@@ -28,6 +28,7 @@ class UITSimAdapter(SimAdapter):
 
         self.sio.on('telemetry', self.telemetry)
         self.sio.on('connect', self.connect)
+        self.sio.on('disconnect', self.disconnect)
 
     def on_start(self):
         port = int(rospy.get_param('~uit_port', default=4567))
@@ -56,6 +57,9 @@ class UITSimAdapter(SimAdapter):
     async def connect(self, sid, environ):
         rospy.loginfo('Connect to socket id: %s', sid)
         await self.send_control()
+
+    def disconnect(self, sid):
+        rospy.loginfo('Disconnect to socket id: %s', sid)
 
     async def telemetry(self, sid, data):
         if data:
