@@ -5,7 +5,6 @@ from sim_adapter.dira_adapter import DiRASimAdapter
 from sim_adapter.uit_adapter import UITSimAdapter
 from sim_adapter.simulator import Simulator
 
-import eventlet
 
 def main():
     rospy.init_node('sim_adapter_node', disable_signals=True)
