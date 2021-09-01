@@ -103,7 +103,7 @@ This simulation send message via websocket. In order to use this simulator, you 
 Since UIT Simulator uses socketio, we should install it before using. **Note**: `python-socketio` must match this version so that it can interact with the simulator.
 
 ```
-pip install python-socketio==4.6.0 eventlet
+pip install python-socketio==4.6.0 tornado
 ```
 
 **Parameters**:
