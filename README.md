@@ -42,6 +42,14 @@ rosrun sim_adapter node.py _adapter:=uit _is_show_image:=True
 This simulation publishes the below topics which could be subsribed to by rosbridge-server package. In order to use this simulator, you should map the topics respectively.
 The publishing and subscribing topics belows are used for internal interacting with this simulation only.
 
+**Requirements**:
+
+Since DiRA Simulator uses rosbridge protocol, we should install it before using
+
+```
+sudo apt install ros-noetic-rosbridge-server
+```
+
 **Subscribe topics**:
 - `dira_rgb_topic`: a rgb image topic published by the simulator. It follows the pattern: `/<team>/camera/rgb/compressed`
 
@@ -66,6 +74,14 @@ roslaunch sim_adapter dira.launch
 ## UIT Simulator
 
 This simulation send message via websocket. In order to use this simulator, you should choose the hostname and port number respectively.
+
+**Requirements**:
+
+Since UIT Simulator uses socketio, we should install it before using. **Note**: `python-socketio` must match this version so that it can interact with the simulator.
+
+```
+pip install python-socketio==4.6.0 eventlet
+```
 
 **Parameters**:
 - `uit_hostname`: hostname for the simulator to access. Default is `4567`

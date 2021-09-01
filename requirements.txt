@@ -1,6 +1,0 @@
-rospy
-eventlet
-socketio
-pillow
-numpy
-opencv-python
