@@ -1,0 +1,26 @@
+<launch>
+    <!-- Common settings -->
+    <arg name="rgb_topic" default="/camera/rgb/image/compressed" />
+    <arg name="cmd_topic" default="/cmd_vel" />
+    <arg name="queue_size" default="10" />
+    <arg name="is_show_image" default="true" />
+
+    <!-- This argument is fixed -->
+    <arg name="adapter" value="uit" />
+
+    <!-- UIT's specific settings -->
+    <arg name="uit_hostname" default="127.0.0.1" />
+    <arg name="uit_port" default="4567" />
+
+    <!-- Start node -->
+    <node pkg="sim_adapter" name="sim_adapter_node" type="node.py" required="true" output="screen">
+        <param name="adapter" value="$(arg adapter)" />
+        <param name="rgb_topic" value="$(arg rgb_topic)" />
+        <param name="cmd_topic" value="$(arg cmd_topic)" />
+        <param name="queue_size" value="$(arg queue_size)" />
+        <param name="uit_hostname" value="$(arg uit_hostname)" />
+        <param name="uit_port" value="$(arg uit_port)" />
+        <param name="is_show_image" value="$(arg is_show_image)" />
+    </node>
+
+</launch>

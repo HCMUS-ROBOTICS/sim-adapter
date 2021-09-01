@@ -1,0 +1,34 @@
+<launch>
+    <!-- Common settings -->
+    <arg name="rgb_topic" default="/camera/rgb/image/compressed" />
+    <arg name="cmd_topic" default="/cmd_vel" />
+    <arg name="queue_size" default="10" />
+    <arg name="is_show_image" default="true" />
+
+    <!-- This argument is fixed -->
+    <arg name="adapter" value="dira" />
+
+    <!-- DiRA's specific settings -->
+    <arg name="team" default="team220" />
+    <arg name="address" default="127.0.0.1" />
+    <arg name="port" default="9090" />
+
+    <!-- Start rosbridge_server -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+        <arg name="address" value="$(arg address)" />
+        <arg name="port" value="$(arg port)" />
+    </include>
+
+    <!-- Start node -->
+    <node pkg="sim_adapter" name="sim_adapter_node" type="node.py" required="true" output="screen">
+        <param name="adapter" value="$(arg adapter)" />
+        <param name="rgb_topic" value="$(arg rgb_topic)" />
+        <param name="cmd_topic" value="$(arg cmd_topic)" />
+        <param name="queue_size" value="$(arg queue_size)" />
+        <param name="dira_rgb_topic" value="/$(arg team)/camera/rgb/compressed" />
+        <param name="dira_speed_topic" value="/$(arg team)/set_speed" />
+        <param name="dira_angle_topic" value="/$(arg team)/set_angle" />
+        <param name="is_show_image" value="$(arg is_show_image)" />
+    </node>
+
+</launch>
