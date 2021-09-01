@@ -4,7 +4,8 @@ from geometry_msgs.msg import Twist
 import numpy as np
 import cv2
 
-import eventlet
+import threading
+import tornado
 import socketio
 
 from PIL import Image
@@ -20,9 +21,7 @@ class UITSimAdapter(SimAdapter):
 
     def __init__(self, sim: Simulator):
         self.sim = sim
-
-        self.sio = socketio.Server()
-        self.app = socketio.WSGIApp(self.sio)
+        self.sio = socketio.AsyncServer(async_mode='tornado')
 
         self.speed = 0.0
         self.angle = 0.0
@@ -36,27 +35,42 @@ class UITSimAdapter(SimAdapter):
 
         rospy.loginfo('Listening to %s:%d', hostname, port)
 
-        eventlet.wsgi.server(eventlet.listen((hostname, port)), self.app)
-        rospy.signal_shutdown('keyboard interrupted.')
+        app = tornado.web.Application(
+            [
+                (r"/socket.io/", socketio.get_tornado_handler(self.sio)),
+            ],
+        )
 
-    def connect(self, sid, environ):
+        self.server = app.listen(port, address=hostname)
+        self.thread = threading.Thread(target=tornado.ioloop.IOLoop.current().start)
+        self.thread.start()
+
+    def on_exit(self):
+        def exit_callback():
+            self.server.stop()
+            tornado.ioloop.IOLoop.current().stop()
+
+        tornado.ioloop.IOLoop.current().add_callback(exit_callback)
+        self.thread.join()
+
+    async def connect(self, sid, environ):
         rospy.loginfo('Connect to socket id: %s', sid)
-        self.send_control()
+        await self.send_control()
 
-    def telemetry(self, sid, data):
+    async def telemetry(self, sid, data):
         if data:
             image = Image.open(BytesIO(base64.b64decode(data["image"])))
             image = np.asarray(image)
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
             self.sim.recv_image(image)
-            self.send_control()
+            await self.send_control()
 
         else:
-            self.sio.emit('manual', data={}, skip_sid=True)
+            await self.sio.emit('manual', data={}, skip_sid=True)
 
-    def send_control(self):
-        self.sio.emit(
+    async def send_control(self):
+        await self.sio.emit(
             "steer",
             data={
                 'steering_angle': str(self.angle),

@@ -5,7 +5,7 @@ from sim_adapter.simulator import Simulator
 
 
 def main():
-    rospy.init_node('sim_adapter_node', disable_signals=True)
+    rospy.init_node('sim_adapter_node')
     rospy.loginfo('sim_adapter_node is initialized')
     simulator = Simulator()
 
