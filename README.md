@@ -36,6 +36,29 @@ catkin_make
 rosrun sim_adapter node.py _adapter:=uit _is_show_image:=True
 ```
 
+To verify that the simulator can receive the data from command topic such as `/cmd_vel`, run:
+```bash
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: <speed>
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: <angle>"
+```
+
+**Example**:
+```bash
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 50.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 10.0"
+```
 
 ## DiRA Simulator
 
