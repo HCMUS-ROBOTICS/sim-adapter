@@ -100,10 +100,11 @@ This simulation send message via websocket. In order to use this simulator, you 
 
 **Requirements**:
 
-Since UIT Simulator uses socketio, we should install it before using. **Note**: `python-socketio` and `python-engineio` must match this version so that it can interact with the simulator.
+Since UIT Simulator uses socketio, we should install it before using. Tested with `python-socketio==5.4.0` and `python-engineio==4.2.1`.
+If you cannot receive images from the simulator. Please consider setting `auto_connect=True` or `auto_connect=False`. If it is still not resolved, please raise an issue.
 
 ```
-pip install python-socketio==4.6.0 python-engineio==3.13 tornado
+pip install python-socketio==5.4.0 python-engineio==4.2.1 tornado
 ```
 
 **Parameters**:
