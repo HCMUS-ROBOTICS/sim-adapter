@@ -1,16 +1,32 @@
-from .simulator import SimAdapter, Simulator
-import rospy
-from geometry_msgs.msg import Twist
-import numpy as np
-import cv2
-
-import threading
-import tornado
-import socketio
-
-from PIL import Image
-from io import BytesIO
 import base64
+import threading
+from io import BytesIO
+
+import cv2
+import numpy as np
+import rospy
+import socketio
+import tornado
+from geometry_msgs.msg import Twist
+from PIL import Image
+from socketio.asyncio_manager import AsyncManager
+
+from .simulator import SimAdapter, Simulator
+
+
+class UITSocketManager(AsyncManager):
+
+    def __init__(self, auto_connect: bool = False):
+        super().__init__()
+        self.auto_connect = auto_connect
+
+    def sid_from_eio_sid(self, eio_sid, namespace):
+        sid = super().sid_from_eio_sid(eio_sid, namespace)
+        if sid is None and self.auto_connect:
+            rospy.loginfo('Client did not send connect. Auto connect')
+            sid = self.connect(eio_sid, namespace)
+        return sid
+
 
 class UITSimAdapter(SimAdapter):
     r"""
@@ -21,7 +37,13 @@ class UITSimAdapter(SimAdapter):
 
     def __init__(self, sim: Simulator):
         self.sim = sim
-        self.sio = socketio.AsyncServer(async_mode='tornado')
+
+        auto_connect = rospy.get_param('~auto_connect', True)
+
+        self.sio = socketio.AsyncServer(
+            client_manager=UITSocketManager(auto_connect),
+            async_mode='tornado',
+        )
 
         self.speed = 0.0
         self.angle = 0.0
@@ -56,7 +78,7 @@ class UITSimAdapter(SimAdapter):
 
     async def connect(self, sid, environ):
         rospy.loginfo('Connect to socket id: %s', sid)
-        await self.send_control()
+        await self.send_control(sid)
 
     def disconnect(self, sid):
         rospy.loginfo('Disconnect to socket id: %s', sid)
@@ -68,19 +90,20 @@ class UITSimAdapter(SimAdapter):
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
             self.sim.recv_image(image)
-            await self.send_control()
+            await self.send_control(sid)
 
         else:
-            await self.sio.emit('manual', data={}, skip_sid=True)
+            await self.sio.emit('manual', data={}, to=sid)
 
-    async def send_control(self):
+    async def send_control(self, sid):
         await self.sio.emit(
             "steer",
             data={
                 'steering_angle': str(self.angle),
                 'throttle': str(self.speed),
             },
-            skip_sid=True)
+            to=sid,
+        )
 
     def send_command(self, cmd_vel: Twist):
         self.speed = cmd_vel.linear.x
