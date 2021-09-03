@@ -113,4 +113,3 @@ class Simulator:
         self.adapter.on_start()
         rospy.spin()
         self.adapter.on_exit()
-        rospy.signal_shutdown('Node shutdown gracefully.')

@@ -1,15 +1,32 @@
-from .simulator import SimAdapter, Simulator
-import rospy
-from geometry_msgs.msg import Twist
-import numpy as np
-import cv2
-
-import eventlet
-import socketio
-
-from PIL import Image
-from io import BytesIO
 import base64
+import threading
+from io import BytesIO
+
+import cv2
+import numpy as np
+import rospy
+import socketio
+import tornado
+from geometry_msgs.msg import Twist
+from PIL import Image
+from socketio.asyncio_manager import AsyncManager
+
+from .simulator import SimAdapter, Simulator
+
+
+class UITSocketManager(AsyncManager):
+
+    def __init__(self, auto_connect: bool = False):
+        super().__init__()
+        self.auto_connect = auto_connect
+
+    def sid_from_eio_sid(self, eio_sid, namespace):
+        sid = super().sid_from_eio_sid(eio_sid, namespace)
+        if sid is None and self.auto_connect:
+            rospy.loginfo('Client did not send connect. Auto connect')
+            sid = self.connect(eio_sid, namespace)
+        return sid
+
 
 class UITSimAdapter(SimAdapter):
     r"""
@@ -21,14 +38,19 @@ class UITSimAdapter(SimAdapter):
     def __init__(self, sim: Simulator):
         self.sim = sim
 
-        self.sio = socketio.Server()
-        self.app = socketio.WSGIApp(self.sio)
+        auto_connect = rospy.get_param('~auto_connect', True)
+
+        self.sio = socketio.AsyncServer(
+            client_manager=UITSocketManager(auto_connect),
+            async_mode='tornado',
+        )
 
         self.speed = 0.0
         self.angle = 0.0
 
         self.sio.on('telemetry', self.telemetry)
         self.sio.on('connect', self.connect)
+        self.sio.on('disconnect', self.disconnect)
 
     def on_start(self):
         port = int(rospy.get_param('~uit_port', default=4567))
@@ -36,33 +58,52 @@ class UITSimAdapter(SimAdapter):
 
         rospy.loginfo('Listening to %s:%d', hostname, port)
 
-        eventlet.wsgi.server(eventlet.listen((hostname, port)), self.app)
-        rospy.signal_shutdown('keyboard interrupted.')
+        app = tornado.web.Application(
+            [
+                (r"/socket.io/", socketio.get_tornado_handler(self.sio)),
+            ],
+        )
 
-    def connect(self, sid, environ):
+        self.server = app.listen(port, address=hostname)
+        self.thread = threading.Thread(target=tornado.ioloop.IOLoop.current().start)
+        self.thread.start()
+
+    def on_exit(self):
+        def exit_callback():
+            self.server.stop()
+            tornado.ioloop.IOLoop.current().stop()
+
+        tornado.ioloop.IOLoop.current().add_callback(exit_callback)
+        self.thread.join()
+
+    async def connect(self, sid, environ):
         rospy.loginfo('Connect to socket id: %s', sid)
-        self.send_control()
+        await self.send_control(sid)
 
-    def telemetry(self, sid, data):
+    def disconnect(self, sid):
+        rospy.loginfo('Disconnect to socket id: %s', sid)
+
+    async def telemetry(self, sid, data):
         if data:
             image = Image.open(BytesIO(base64.b64decode(data["image"])))
             image = np.asarray(image)
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
             self.sim.recv_image(image)
-            self.send_control()
+            await self.send_control(sid)
 
         else:
-            self.sio.emit('manual', data={}, skip_sid=True)
+            await self.sio.emit('manual', data={}, to=sid)
 
-    def send_control(self):
-        self.sio.emit(
+    async def send_control(self, sid):
+        await self.sio.emit(
             "steer",
             data={
                 'steering_angle': str(self.angle),
                 'throttle': str(self.speed),
             },
-            skip_sid=True)
+            to=sid,
+        )
 
     def send_command(self, cmd_vel: Twist):
         self.speed = cmd_vel.linear.x

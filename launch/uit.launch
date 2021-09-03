@@ -11,6 +11,7 @@
     <!-- UIT's specific settings -->
     <arg name="uit_hostname" default="127.0.0.1" />
     <arg name="uit_port" default="4567" />
+    <arg name="auto_connect" default="true" />
 
     <!-- Start node -->
     <node pkg="sim_adapter" name="sim_adapter_node" type="node.py" required="true" output="screen">
