@@ -108,8 +108,8 @@ pip install python-socketio==5.4.0 python-engineio==4.2.1 tornado
 ```
 
 **Parameters**:
-- `uit_hostname`: hostname for the simulator to access. Default is `4567`
-- `uit_port`: port number for the simulator to access. Default is `127.0.0.1`
+- `uit_hostname`: hostname for the simulator to access. Default is `127.0.0.1`.
+- `uit_port`: port number for the simulator to access. Default is  `4567`.
 
 **Example running command**:
 ```bash
