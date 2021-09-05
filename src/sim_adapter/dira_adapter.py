@@ -49,6 +49,7 @@ class DiRASimAdapter(SimAdapter):
 
     def _image_callback(self, image: CompressedImage):
         image = cv2.imdecode(np.frombuffer(image.data, np.uint8), cv2.IMREAD_COLOR)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         self.sim.recv_image(image)
 
     def send_command(self, cmd_vel: Twist):
