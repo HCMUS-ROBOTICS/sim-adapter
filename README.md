@@ -1,5 +1,5 @@
-# sim-adapter
-This is the package to fit simulators from the outside to our packages
+# SSDF Simulation Adapter
+This is the package to fit simulators from the outside to SSDF packages
 
 # Installlation
 
