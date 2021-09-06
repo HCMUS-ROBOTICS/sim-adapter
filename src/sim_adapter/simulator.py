@@ -90,7 +90,7 @@ class Simulator:
         of publishing itself.
 
         Args:
-            image: an image to be published to `rgb_topic`
+            image: an image to be published to `rgb_topic`. It should be in RGB format.
         """
         msg = CompressedImage()
         msg.header.stamp = rospy.Time.now()
@@ -100,6 +100,7 @@ class Simulator:
         self.image_pub.publish(msg)
 
         if self.is_show_image:
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             cv2.imshow(self.WIN_SHOW_IMAGE, image)
             cv2.waitKey(1)
 

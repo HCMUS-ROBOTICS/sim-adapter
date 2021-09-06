@@ -87,8 +87,6 @@ class UITSimAdapter(SimAdapter):
         if data:
             image = Image.open(BytesIO(base64.b64decode(data["image"])))
             image = np.asarray(image)
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
             self.sim.recv_image(image)
             await self.send_control(sid)
 
